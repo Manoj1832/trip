@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback and Ratings</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../views/css/feedback.css">
+</head>
+<body>
+  <div class="container-box" id="formContainer">
+    <h1>Feedback & Ratings</h1>
+    <form id="feedbackForm">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" required>
+      </div>
+      <div class="form-group">
+        <label for="rating">Rating</label>
+        <div class="star-rating">
+          <input type="radio" id="star5" name="rating" value="5" required>
+          <label for="star5" class="fas fa-star"></label>
+          <input type="radio" id="star4" name="rating" value="4">
+          <label for="star4" class="fas fa-star"></label>
+          <input type="radio" id="star3" name="rating" value="3">
+          <label for="star3" class="fas fa-star"></label>
+          <input type="radio" id="star2" name="rating" value="2">
+          <label for="star2" class="fas fa-star"></label>
+          <input type="radio" id="star1" name="rating" value="1">
+          <label for="star1" class="fas fa-star"></label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="feedback">Feedback</label>
+        <textarea class="form-control" id="feedback" rows="3" required></textarea>
+      </div>
+      <small style="display: block; margin-top: 10px; color: #555;">Preview:</small>
+      <div id="feedbackPreview" style="min-height: 50px; background: #f1f1f1; padding: 10px; border-radius: 10px; margin-bottom: 15px;"></div>
+      <button type="submit" class="btn btn-primary btn-block">Submit Feedback</button>
+    </form>
+  </div>
+  <div id="submittedMessage">
+    <h1>🎉 Feedback Submitted Successfully!</h1>
+    <p>Thank you for your valuable feedback. We truly appreciate it!</p>
+    <button class="btn btn-light" onclick="goBack()">Leave Another Feedback</button>
+    <button class="btn btn-secondary" onclick="goHome()">Go to Home Page</button>
+  </div>
+
+<script src="../views/js/feedback.js"></script>
+</body>
+</html>

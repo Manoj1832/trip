@@ -1,0 +1,112 @@
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #aae4f4, #eef8fa); /* Gradient background */
+      background-size: cover;
+      color: #333;
+      padding: 20px;
+      transition: background 0.3s ease;
+    }
+
+    .container {
+      margin-top: 40px;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 30px;
+      color: white;
+    }
+
+    .card {
+      margin-bottom: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.8); /* Light transparent background for cards */
+      backdrop-filter: blur(10px); /* Blurring the background for blending effect */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+      background: linear-gradient(to right, #007bff, #00c6ff);
+      color: white;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+
+    .btn-custom {
+      background: linear-gradient(to right, #007bff, #00c6ff);
+      border: none;
+      color: white;
+      transition: background 0.3s ease;
+    }
+
+    .btn-custom:hover {
+      background: linear-gradient(to right, #0056b3, #0095ff);
+    }
+
+    .table th, .table td {
+      vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+      background-color: #f1f1f1;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-group label {
+      font-weight: 500;
+    }
+
+    .modal-content {
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(5px); /* Blurring the background for modals */
+    }
+
+    .modal-header {
+      background: linear-gradient(to right, #007bff, #00c6ff);
+      color: white;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+
+    .modal-footer {
+      border-top: none;
+    }
+
+    .alert {
+      border-radius: 10px;
+    }
+
+    /* Enhanced Hover on buttons */
+    .btn-custom {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-custom::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300%;
+      height: 300%;
+      background: rgba(255, 255, 255, 0.1);
+      transition: width 0.4s, height 0.4s, top 0.4s, left 0.4s;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .btn-custom:hover::before {
+      width: 400%;
+      height: 400%;
+      top: -50%;
+      left: -50%;
+    }

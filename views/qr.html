@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Google Pay QR</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9fafb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    #qrcode {
+      margin: 20px auto;
+      width: 250px;
+      height: 250px;
+    }
+    p.instruction {
+      font-size: 1rem;
+      color: #555;
+      max-width: 300px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Scan to Pay via Google Pay</h2>
+
+  <div id="qrcode"></div>
+
+  <p class="instruction">Open Google Pay and scan this QR code or use any UPI app to complete the payment.</p>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script>
+    const upiLink = "upi://pay?pa=manojvip1832@okaxis&pn=Manoj&am=1&cu=INR&tn=Payment";
+
+    new QRCode(document.getElementById("qrcode"), {
+      text: upiLink,
+      width: 250,
+      height: 250,
+      colorDark : "#000000",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+  </script>
+
+</body>
+</html>

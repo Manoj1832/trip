@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payment Method</title>
+  <link rel="stylesheet" href="../views/css/payment.css" />
+</head>
+<body>
+
+  <h1>Select a Payment Method</h1>
+
+  <div class="options">
+    <div class="option" id="card-option">
+      <img src="./assets/card.png" alt="Card Payment" />
+      <p>Card Payment</p>
+    </div>
+    <div class="option" onclick="window.location.href='qr.html'">
+      <img src="./assets/gpay.png" alt="Google Pay" />
+      <p>Google Pay</p>
+    </div>
+  </div>
+
+  <!-- Passenger Info -->
+  <div id="passengerDetails">
+    <h3>Passenger Information</h3>
+    <p id="passengerNameDisplay"></p>
+    <p id="passengerEmailDisplay"></p>
+    <p id="passengerAgeDisplay"></p>
+    <p id="passengerSeatsDisplay"></p>
+  </div>
+
+  <!-- Card Payment Form -->
+  <div class="payment-modal" id="card-payment-form" style="display:none;">
+    <h2>Card Payment</h2>
+    <form id="payment-form" novalidate>
+      <p>Booking Type: <span id="bookingType"></span></p>
+      <div id="itemInfo">
+        <p>Total Price: <span id="priceDisplay"></span></p>
+      </div>
+
+      <label for="name">Cardholder Name</label>
+      <input type="text" id="name" placeholder="Name on Card" required />
+
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" maxlength="10" placeholder="10-digit Phone" required />
+
+      <label for="card">Card Number</label>
+      <input type="text" id="card" maxlength="16" placeholder="1234567812345678" required />
+
+      <div class="row">
+        <div class="column">
+          <label for="expiry">Expiry</label>
+          <input type="month" id="expiry" required />
+        </div>
+        <div class="column">
+          <label for="cvv">CVV</label>
+          <input type="password" id="cvv" maxlength="3" placeholder="123" required />
+        </div>
+      </div>
+
+      <button type="submit" id="send-otp-btn">Send OTP</button>
+
+      <div id="otp-container" style="display:none;">
+        <label for="otp">Enter OTP</label>
+        <input type="text" id="otp" placeholder="Enter OTP" />
+        <button type="button" id="verify-btn">Verify Payment</button>
+        <p id="otp-message"></p>
+      </div>
+    </form>
+  </div>
+
+  <!-- Optional Overlay/Modal -->
+  <div id="modalOverlay" style="display:none;"></div>
+  <div id="userDetailsModal" style="display:none;"></div>
+
+  <script src="./js/payment.js"></script>
+</body>
+</html>

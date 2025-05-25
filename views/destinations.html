@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TripTrekker - Explore Destinations</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+ <link rel="stylesheet" href="../views/css/destinations.css" />
+</head>
+<body>
+
+  <h1><i class="fas fa-map-marked-alt"></i> TripTrekker Destinations</h1>
+
+  <div class="controls">
+    <select id="fromSelect" aria-label="Select departure">
+      <option value="" disabled selected>From</option>
+    </select>
+
+    <select id="toSelect" aria-label="Select destination">
+      <option value="" disabled selected>To</option>
+    </select>
+
+    <select id="travelModeSelect" aria-label="Select travel mode">
+      <option value="" disabled selected>Travel Mode</option>
+      <option value="flight">Flight</option>
+      <option value="train">Train</option>
+      <option value="bus">Bus</option>
+    </select>
+
+    <input type="number" id="travellers" min="1" value="1" aria-label="Number of travellers" title="Number of travellers" />
+
+    <input type="date" id="travelDate" aria-label="Travel date" />
+
+    <input type="text" id="searchBar" placeholder="Search destinations..." aria-label="Search destinations" />
+
+    <select id="sortSelect" aria-label="Sort destinations">
+      <option value="" selected>Sort By</option>
+      <option value="price">Price (Low to High)</option>
+      <option value="rating">Rating (High to Low)</option>
+    </select>
+  </div>
+
+  <div id="suggestion-box" aria-live="polite" aria-atomic="true" hidden>
+    <h4>Suggested Destinations</h4>
+    <div id="suggestions-list"></div>
+  </div>
+
+  <div id="destination-container" aria-live="polite" aria-label="Destination cards"></div>
+
+  <button id="loadMoreBtn">Load More</button>
+
+  <script src="js/destinations.js"></script>
+</body>
+</html>

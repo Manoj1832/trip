@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Train Search</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e3f2fd, #ffffff);
+      padding: 40px 15px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #2c3e50;
+      font-weight: bold;
+    }
+
+    #trainSearchForm {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    #trainSearchForm input,
+    #trainSearchForm button {
+      margin-bottom: 15px;
+    }
+
+    #results {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    /* Modal Overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+
+    /* Modal */
+    .modal-custom {
+      display: none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      width: 90%;
+      max-width: 400px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    .modal-custom h3 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    .modal-custom input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+    }
+
+    .modal-custom button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      font-weight: 600;
+      border-radius: 8px;
+    }
+
+    .btn-cancel {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+
+    .btn-cancel:hover {
+      background-color: #c2c2c2;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Search Trains</h1>
+
+  <form id="trainSearchForm" class="needs-validation" novalidate>
+    <input type="text" id="from" class="form-control" placeholder="From Station" required>
+    <input type="text" id="to" class="form-control" placeholder="To Station" required>
+    <input type="date" id="date" class="form-control" required>
+    <button type="submit" class="btn btn-primary w-100">Search</button>
+  </form>
+
+  <div id="results"></div>
+
+  <!-- Modal Overlay -->
+  <div id="modalOverlay" class="overlay" onclick="closeUserModal()"></div>
+
+  <!-- Modal for Passenger Details -->
+  <div id="userDetailsModal" class="modal-custom">
+    <h3>Enter Passenger Details</h3>
+    <form id="userDetailsForm">
+      <input type="text" id="passengerName" placeholder="Name" required>
+      <input type="email" id="passengerEmail" placeholder="Email" required>
+      <input type="number" id="passengerAge" placeholder="Age" required>
+      <input type="number" id="passengerSeats" placeholder="No. of Seats" required>
+      <button type="submit" class="btn btn-success">Continue to Payment</button>
+      <button type="button" class="btn btn-cancel" onclick="closeUserModal()">Cancel</button>
+    </form>
+  </div>
+
+  <script src="./js/train.js"></script>
+
+  <script>
+    function openUserModal() {
+      document.getElementById('modalOverlay').style.display = 'block';
+      document.getElementById('userDetailsModal').style.display = 'block';
+    }
+
+    function closeUserModal() {
+      document.getElementById('modalOverlay').style.display = 'none';
+      document.getElementById('userDetailsModal').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>

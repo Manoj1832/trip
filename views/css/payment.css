@@ -1,0 +1,115 @@
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e0eafc, #cfdef3);
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 40px;
+    }
+    .options {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .option {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 30px 20px;
+      text-align: center;
+      width: 200px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .option:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+    .option img {
+      width: 80px;
+      height: auto;
+      margin-bottom: 15px;
+    }
+    .option p {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Modal style card form */
+    .payment-modal {
+      display: none;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      width: 100%;
+      margin-top: 30px;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 600;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .row .column {
+      flex: 1;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+    }
+
+    small.error-text {
+      color: red;
+      font-size: 0.8rem;
+    }
+
+    input.error {
+      border: 2px solid red;
+    }
+
+    #otp-container {
+      display: none;
+      margin-top: 20px;
+    }
+
+    #otp-message {
+      margin-top: 10px;
+      font-weight: 600;
+    }

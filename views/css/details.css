@@ -1,0 +1,78 @@
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url('detailsBG.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #000000;
+      line-height: 1.6;
+    }
+  
+    .container {
+      margin: 80px auto;
+      max-width: 700px;
+      background: rgba(162, 193, 223, 0.85); /* slightly less transparent */
+      padding: 50px 40px;
+      border-radius: 20px;
+      text-align: left;
+      box-shadow: 0 14px 45px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(4px); /* subtle glass effect */
+    }
+  
+    h2 {
+      font-size: 38px;
+      margin-bottom: 25px;
+      font-weight: 700;
+      color: #ffcc00;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+  
+    .details p {
+      font-size: 18px;
+      margin: 14px 0;
+      font-weight: 500;
+      color: #222;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+  
+    .price {
+      font-size: 38px;
+      font-weight: bold;
+      color: #ffc107;
+      margin: 30px 0;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+  
+    .btn-custom {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.15);
+      color: #000000;
+      border: 2px solid #ffc107;
+      padding: 12px 24px;
+      font-size: 18px;
+      border-radius: 12px;
+      margin: 10px 8px 0 0;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      box-shadow: 0 6px 12px rgba(187, 232, 232, 0.2);
+      cursor: pointer;
+    }
+  
+    .btn-custom:hover {
+      background: rgba(0, 255, 255, 0.25);
+      border-color: #00ffff;
+      color: #fff;
+      box-shadow: 0 10px 25px rgba(0, 255, 255, 0.5);
+      transform: scale(1.05);
+    }
+  
+    .btn-feedback {
+      border-color: #ffc107;
+    }
+  
+    .btn-feedback:hover {
+      background: rgba(255, 193, 7, 0.25);
+      box-shadow: 0 10px 25px rgba(255, 193, 7, 0.4);
+      transform: scale(1.05);
+    }
