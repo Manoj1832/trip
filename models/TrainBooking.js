@@ -9,3 +9,4 @@ const trainBookingSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('TrainBooking', trainBookingSchema);
+

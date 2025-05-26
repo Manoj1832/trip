@@ -12,12 +12,13 @@ const FlightBooking = require('./models/FlightBooking');
 const Flight = require('./models/Flight');
 const Train = require('./models/Train');
 const TrainBooking = require('./models/TrainBooking');
+const PackageBooking = require('./models/PackageBooking');
 const PaymentSchema = require('./models/Payment');
 const User = require('./models/User');
-const { Feedback,Destination} = require('./models/models');
-const Booking = require('./models/Booking');
+const { Feedback} = require('./models/models');
 require('dotenv').config();
 const BookingSummary = require('./models/BookingSummary');
+
 // --- Package Schema ---
 const packageSchema = new mongoose.Schema({
   title: String,
@@ -434,16 +435,17 @@ app.get('/api/user-bookings', async (req, res) => {
 // Fetch all bookings by email
 app.get('/api/bookings', async (req, res) => {
   const { email } = req.query;
-  if (!email) return res.status(400).json({ error: 'Email required' });
+
+  if (!email) return res.status(400).json({ error: 'Email is required' });
 
   try {
-    const [flights, trains, packages] = await Promise.all([
-      FlightBooking.find({ email }),
-      TrainBooking.find({ email }),
-      PackageBooking.find({ email }),
-    ]);
+    const flights = await FlightBooking.find({ email });
+    const trains = await TrainBooking.find({ email });
+    const packages = await PackageBooking.find({ email });
+
     res.json({ flights, trains, packages });
   } catch (err) {
+    console.error("Fetch bookings error:", err);
     res.status(500).json({ error: 'Failed to fetch bookings' });
   }
 });
@@ -451,26 +453,30 @@ app.get('/api/bookings', async (req, res) => {
 // Cancel booking by ID and type
 app.delete('/api/bookings/:type/:id', async (req, res) => {
   const { type, id } = req.params;
+
   let Model;
   switch (type) {
     case 'flight':
-      Model = FlightBooking;
+      Model = require('./models/FlightBooking');
       break;
     case 'train':
-      Model = TrainBooking;
+      Model = require('./models/TrainBooking');
       break;
     case 'package':
-      Model = PackageBooking;
+      Model = require('./models/PackageBooking');
       break;
     default:
-      return res.status(400).json({ error: 'Invalid booking type' });
+      return res.status(400).json({ success: false, error: 'Invalid booking type' });
   }
 
   try {
-    await Model.findByIdAndDelete(id);
-    res.json({ success: true });
+    const deleted = await Model.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ success: false, error: 'Booking not found' });
+
+    res.json({ success: true, message: 'Booking cancelled successfully' });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to cancel booking' });
+    console.error("Cancel booking error:", err);
+    res.status(500).json({ success: false, error: 'Failed to cancel booking' });
   }
 });
 
