@@ -187,17 +187,19 @@ async function completeBooking() {
     });
 
     const bookingData = await bookingResponse.json();
+    console.log("Booking response:", bookingData); // ✅ DEBUG HERE
 
-    if (bookingResponse.ok) {
+    if (bookingResponse.ok && bookingData.bookingId) {
       localStorage.setItem("txnId", txnId);
       localStorage.setItem("amount", totalAmount);
       localStorage.setItem("bookingId", bookingData.bookingId);
 
-      closeModal();
-      alert("✅ Payment and Booking Successful!");
-      window.location.href = "success.html";
+      alert("✅ Payment & Booking Successful!");
+
+      // ✅ Final Redirect
+      window.location.href = `booking-summary.html?type=${type}&id=${bookingData.bookingId}`;
     } else {
-      alert("❌ Booking failed: " + bookingData.error);
+      alert("❌ Booking failed: " + (bookingData.error || "Unknown error"));
     }
   } catch (error) {
     console.error("Booking error:", error);

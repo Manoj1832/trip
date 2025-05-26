@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Booking Summary</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+    }
+    .summary-card {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #343a40;
+    }
+    .detail-row {
+      margin-bottom: 15px;
+    }
+    .label {
+      font-weight: 600;
+      color: #495057;
+    }
+    .value {
+      color: #212529;
+    }
+    .btn-container {
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .btn-home {
+      background-color: #007bff;
+      color: white;
+    }
+    .btn-feedback {
+      background-color: #28a745;
+      color: white;
+    }
+    .btn-home:hover, .btn-feedback:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="summary-card">
+    <h2>Booking Summary</h2>
+    <div id="summaryDetails">
+      <!-- Booking details injected here -->
+    </div>
+    <div class="btn-container">
+      <button id="btnFeedback" class="btn btn-feedback">Leave Feedback</button>
+      <button id="btnHome" class="btn btn-home">Go to Home</button>
+    </div>
+  </div>
+
+  <script src="./js/booking-summary.js"></script>
+</body>
+</html>

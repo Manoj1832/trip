@@ -7,25 +7,7 @@ const jwt = require('jsonwebtoken');
 const twilio = require('twilio');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-require('dotenv').config();
 const { GoogleSearch } = require('google-search-results-nodejs');
-
-const packageSchema = new mongoose.Schema({
-  name: String,
-  description: String,
-  image: String,
-  rating: Number,
-  reviews: Number,
-  flightDetails: Object,
-  hotelDetails: Object,
-  carDetails: Object,
-  price: Number,
-  mode: String // "flight", "train", "bus", or "mixed"
-});
-
-const TravelPackage = mongoose.model('TravelPackage', packageSchema);
-
-
 const FlightBooking = require('./models/FlightBooking');
 const Flight = require('./models/Flight');
 const Train = require('./models/Train');
@@ -34,6 +16,19 @@ const PaymentSchema = require('./models/Payment');
 const User = require('./models/User');
 const { Feedback,Destination} = require('./models/models');
 const Booking = require('./models/Booking');
+require('dotenv').config();
+
+const summarySchema = new mongoose.Schema({
+  type: String,
+  booking: Object,
+  item: Object,
+  txnId: String,
+  amount: Number,
+  userDetails: Object,
+  savedAt: { type: Date, default: Date.now }
+});
+
+const BookingSummary = mongoose.model("BookingSummary", summarySchema);
 
 const app = express();
 const port = 5000;
@@ -53,6 +48,18 @@ mongoose.connect("mongodb://localhost:27017/travel-tourism", {
 }).then(() => {
     console.log("MongoDB connected...");
 }).catch(err => console.error("MongoDB connection error:", err));
+
+
+app.post("/api/bookings/summary", async (req, res) => {
+  try {
+    const summary = new BookingSummary(req.body);
+    await summary.save();
+    res.status(201).json({ message: "Summary saved" });
+  } catch (error) {
+    console.error("Summary save error:", error);
+    res.status(500).json({ error: "Failed to save summary" });
+  }
+});
 
 // Signup
 app.post('/api/signup', async (req, res) => {
@@ -82,6 +89,40 @@ app.post('/api/login', async (req, res) => {
   });
 });
 
+// Save booking summary details
+app.post('/api/booking-summary', async (req, res) => {
+  try {
+    const {
+      userEmail,
+      userName,
+      bookings,     // [{ type: 'flight'|'train'|'package', bookingId }]
+      totalPrice,
+      paymentStatus,  // optional, default: 'pending'
+      paymentDetails   // optional: { transactionId, paymentMethod, paidAt }
+    } = req.body;
+
+    if (!userEmail || !userName || !Array.isArray(bookings) || bookings.length === 0) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const newSummary = new BookingSummary({
+      userEmail,
+      userName,
+      bookings,
+      totalPrice,
+      paymentStatus: paymentStatus || 'pending',
+      paymentDetails: paymentDetails || {}
+    });
+
+    await newSummary.save();
+
+    res.status(201).json({ message: 'Booking summary saved successfully', bookingSummaryId: newSummary._id });
+  } catch (error) {
+    console.error('Booking summary save error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 // Offensive words filter for feedback
 const offensiveWords = [
     "stupid", "idiot", "dumb", "nonsense", "useless", "hate", "sucks", "worst",
@@ -95,45 +136,6 @@ const containsOffensiveWords = (text) => {
 };
 
 // ==== Routes ====
-// Signup Route
-app.post("/api/signup", async (req, res) => {
-  const { name, email, password } = req.body;
-
-  try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: "Email already registered." });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, password: hashedPassword });
-    await newUser.save();
-
-    res.status(201).json({ message: "User created successfully." });
-  } catch (error) {
-    console.error("Signup error:", error);
-    res.status(500).json({ message: "Internal server error." });
-  }
-});
-
-// Login Route
-app.post("/api/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid email or password." });
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid email or password." });
-
-    // You can return a token here if needed
-    res.json({ message: "Login successful", user: { name: user.name, email: user.email } });
-  } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ message: "Internal server error." });
-  }
-});
-
-
 // Bookings
 app.get('/api/bookings', async (req, res) => {
     const { name } = req.query;
