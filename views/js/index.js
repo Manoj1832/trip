@@ -100,7 +100,7 @@ if (loginForm) {
     const password = document.getElementById("loginPassword").value;
 
     // Define your admin credentials here
-    const adminEmail = "admin@example.com";     // Replace with actual admin email
+    const adminEmail = "admin@gmail.com";     // Replace with actual admin email
     const adminPassword = "admin123";           // Replace with actual admin password
 
     // Check admin credentials first

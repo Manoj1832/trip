@@ -239,21 +239,6 @@ app.post('/api/payments', async (req, res) => {
   }
 });
 
-// Destinations
-app.get('/api/destinations', async (req, res) => {
-  const { travellers = 1, date } = req.query;
-  const destinations = await Destination.find();
-
-  const priced = destinations.map(dest => {
-    const base = dest.price || 1000;
-    const seasonalMultiplier = date.includes('12-') ? 1.5 : 1;
-    const totalPrice = Math.ceil(base * travellers * seasonalMultiplier);
-    return { ...dest.toObject(), price: totalPrice };
-  });
-
-  res.json(priced);
-});
-
 app.get('/api/flights', async (req, res) => {
   const { from, to, date } = req.query;
   const query = {
@@ -357,17 +342,6 @@ app.post('/api/train-bookings', async (req, res) => {
   }
 });
 
-// Bus Route
-app.post('/api/book-bus', async (req, res) => {
-  try {
-    const booking = new BusBooking(req.body);
-    await booking.save();
-    res.status(200).json({ success: true, message: 'Bus booked successfully' });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Error booking bus' });
-  }
-});
-
 // Payment confirmation for Flight bookings
 app.post('/api/confirm-flight-payment', async (req, res) => {
   const { bookingId, paymentStatus, transactionId } = req.body;
@@ -387,28 +361,9 @@ app.post('/api/confirm-flight-payment', async (req, res) => {
   }
 });
 
-// Payment confirmation for Bus bookings
-app.post('/api/confirm-bus-payment', async (req, res) => {
-  const { bookingId, paymentStatus, transactionId } = req.body;
-
-  try {
-    const booking = await BusBooking.findById(bookingId);
-    if (!booking) return res.status(404).json({ success: false, message: 'Bus booking not found' });
-
-    booking.paymentStatus = paymentStatus;
-    booking.transactionId = transactionId || '';
-    await booking.save();
-
-    res.status(200).json({ success: true, message: 'Bus payment confirmed', bookingId: booking._id });
-  } catch (err) {
-    console.error('Bus payment confirmation error:', err);
-    res.status(500).json({ success: false, message: 'Error confirming bus payment' });
-  }
-});
 
 // Chatbot route
 const search = new GoogleSearch(process.env.SERPAPI_KEY);
-
 app.post('/chat', (req, res) => {
   const query = req.body.message;
   if (!query) return res.status(400).json({ error: 'Message is required' });
@@ -427,7 +382,6 @@ app.post('/chat', (req, res) => {
 });
 
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-
 // Endpoint to send OTP
 app.post('/send-otp', async (req, res) => {
   const { phone } = req.body;
@@ -477,23 +431,45 @@ app.get('/api/user-bookings', async (req, res) => {
   }
 });
 
-// Route to cancel booking by type and id
-app.delete('/api/cancel-booking/:type/:id', async (req, res) => {
-  const { type, id } = req.params;
-  const collections = {
-    flight: FlightBooking,
-    train: TrainBooking,
-    package: PackageBooking,
-  };
+// Fetch all bookings by email
+app.get('/api/bookings', async (req, res) => {
+  const { email } = req.query;
+  if (!email) return res.status(400).json({ error: 'Email required' });
 
-  const Model = collections[type];
-  if (!Model) return res.status(400).json({ error: 'Invalid booking type' });
+  try {
+    const [flights, trains, packages] = await Promise.all([
+      FlightBooking.find({ email }),
+      TrainBooking.find({ email }),
+      PackageBooking.find({ email }),
+    ]);
+    res.json({ flights, trains, packages });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch bookings' });
+  }
+});
+
+// Cancel booking by ID and type
+app.delete('/api/bookings/:type/:id', async (req, res) => {
+  const { type, id } = req.params;
+  let Model;
+  switch (type) {
+    case 'flight':
+      Model = FlightBooking;
+      break;
+    case 'train':
+      Model = TrainBooking;
+      break;
+    case 'package':
+      Model = PackageBooking;
+      break;
+    default:
+      return res.status(400).json({ error: 'Invalid booking type' });
+  }
 
   try {
     await Model.findByIdAndDelete(id);
-    res.json({ message: `${type.charAt(0).toUpperCase() + type.slice(1)} booking cancelled` });
-  } catch (error) {
-    console.error(error);
+    res.json({ success: true });
+  } catch (err) {
     res.status(500).json({ error: 'Failed to cancel booking' });
   }
 });

@@ -1,117 +1,70 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const userSession = JSON.parse(localStorage.getItem('tripUser'));
-    const userEmail = userSession?.email;
-
-  if (!userEmail) {
-    alert('Please log in to view your bookings.');
-    window.location.href = 'index.html';
+document.addEventListener("DOMContentLoaded", async () => {
+  const user = JSON.parse(localStorage.getItem('tripUser'));
+  if (!user || !user.email) {
+    alert("Please log in to view bookings.");
+    window.location.href = "index.html";
     return;
   }
 
-  fetch(`http://localhost:5000/api/user-bookings?email=${encodeURIComponent(userEmail)}`)
-    .then(res => res.json())
-    .then(data => {
-      console.log("Received bookings:", data); // Debug
-      updateSection('flight-bookings', data.flights || [], 'flight');
-      updateSection('train-bookings', data.trains || [], 'train');
-      updateSection('package-bookings', data.packages || [], 'package');
-    })
-    .catch(err => {
-      console.error('Error fetching bookings:', err);
-    });
+  const email = user.email;
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/bookings?email=${email}`);
+    const data = await res.json();
+
+    renderBookings(data.flights, 'flight-bookings', 'flight');
+    renderBookings(data.trains, 'train-bookings', 'train');
+    renderBookings(data.packages, 'package-bookings', 'package');
+  } catch (err) {
+    console.error("Failed to load bookings:", err);
+    alert("Failed to fetch your bookings. Please try again later.");
+  }
 });
 
-
-function updateSection(containerId, bookings, type) {
+function renderBookings(bookings, containerId, type) {
   const container = document.getElementById(containerId);
-  if (!bookings.length) {
+  container.innerHTML = "";
+
+  if (!bookings || bookings.length === 0) {
     container.innerHTML = `<p class="text-muted">No ${type} bookings found.</p>`;
     return;
   }
 
-  container.innerHTML = bookings.map(b => {
-    const date = new Date(b.bookingDate || b.date).toLocaleDateString();
-
-    // Common details
-    const userDetails = `
-      <p class="mb-1"><strong>Name:</strong> ${b.userName || 'N/A'}</p>
-      <p class="mb-1"><strong>Email:</strong> ${b.userEmail}</p>
-    `;
-
-    // Type-specific details
-    let bookingDetails = '';
-    if (type === 'flight') {
-      bookingDetails = `
-        <p class="mb-1"><strong>Flight ID:</strong> ${b.flightId}</p>
-        <p class="mb-1"><strong>From:</strong> ${b.from}</p>
-        <p class="mb-1"><strong>To:</strong> ${b.to}</p>
-        <p class="mb-1"><strong>Seats:</strong> ${b.seats || 1}</p>
-        <p class="mb-1"><strong>Payment:</strong> ${b.paymentStatus || 'N/A'}</p>
-      `;
-    } else if (type === 'train') {
-      bookingDetails = `
-        <p class="mb-1"><strong>Train ID:</strong> ${b.trainId}</p>
-        <p class="mb-1"><strong>From:</strong> ${b.from}</p>
-        <p class="mb-1"><strong>To:</strong> ${b.to}</p>
-        <p class="mb-1"><strong>Seats:</strong> ${b.seats || 1}</p>
-        <p class="mb-1"><strong>Payment:</strong> ${b.paymentStatus || 'N/A'}</p>
-      `;
-    } else if (type === 'package') {
-      bookingDetails = `
-        <p class="mb-1"><strong>Package Name:</strong> ${b.name}</p>
-        <p class="mb-1"><strong>Description:</strong> ${b.description}</p>
-        <p class="mb-1"><strong>Location:</strong> ${b.location || 'N/A'}</p>
-        <p class="mb-1"><strong>Duration:</strong> ${b.duration || 'N/A'}</p>
-        <p class="mb-1"><strong>Price:</strong> ₹${b.totalPrice || 'N/A'}</p>
-        <p class="mb-1"><strong>Payment:</strong> ${b.paymentStatus || 'N/A'}</p>
-      `;
-    }
-
-    return `
-      <div class="card mb-3 shadow-sm">
-        <div class="row g-0">
-          ${type === 'package' && b.image ? `
-            <div class="col-md-4">
-              <img src="${b.image}" class="img-fluid rounded-start" alt="${b.name}">
-            </div>` : ''
-          }
-          <div class="${type === 'package' && b.image ? 'col-md-8' : 'col-md-12'}">
-            <div class="card-body">
-              <h5 class="card-title">${type.charAt(0).toUpperCase() + type.slice(1)} Booking</h5>
-              ${userDetails}
-              ${bookingDetails}
-              <p class="card-text"><small class="text-muted">Date: ${date}</small></p>
-              ${type !== 'package' ? `
-                <button class="btn btn-outline-danger btn-sm mt-2" onclick="cancelBooking('${type}', '${b._id}')">
-                  <i class="bi bi-x-circle"></i> Cancel
-                </button>` : ''
-              }
-            </div>
-          </div>
-        </div>
+  bookings.forEach(booking => {
+    const card = document.createElement('div');
+    card.className = "card mb-3";
+    card.innerHTML = `
+      <div class="card-body">
+        <h5 class="card-title">${booking.name}</h5>
+        <p class="card-text"><strong>Email:</strong> ${booking.email}</p>
+        <p class="card-text"><strong>Date:</strong> ${booking.date || 'N/A'}</p>
+        <p class="card-text"><strong>Seats:</strong> ${booking.seats || 1}</p>
+        <p class="card-text"><strong>Price:</strong> ₹${booking.price}</p>
+        <button class="btn btn-danger btn-sm" onclick="cancelBooking('${type}', '${booking._id}')">Cancel Booking</button>
       </div>
     `;
-  }).join('');
+    container.appendChild(card);
+  });
 }
 
+async function cancelBooking(type, id) {
+  const confirmCancel = confirm("Are you sure you want to cancel this booking?");
+  if (!confirmCancel) return;
 
-function cancelBooking(type, id) {
-  if (!confirm('Are you sure you want to cancel this booking?')) return;
-
-  fetch(`http://localhost:5000/api/cancel-booking/${type}/${id}`, { method: 'DELETE' })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message || 'Booking cancelled');
-      document.querySelector(`#${type}-bookings`).innerHTML = '<p class="text-muted">Refreshing...</p>';
-      return fetch(`http://localhost:5000/api/user-bookings?email=${encodeURIComponent(localStorage.getItem('userEmail'))}`);
-    })
-    .then(res => res.json())
-    .then(data => {
-      updateSection(`${type}-bookings`, data[`${type}s`], type);
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Cancellation failed');
+  try {
+    const res = await fetch(`http://localhost:5000/api/bookings/${type}/${id}`, {
+      method: 'DELETE',
     });
-}
+    const result = await res.json();
 
+    if (result.success) {
+      alert("Booking cancelled successfully.");
+      location.reload();
+    } else {
+      alert("Failed to cancel booking.");
+    }
+  } catch (err) {
+    console.error("Error cancelling booking:", err);
+    alert("Something went wrong while cancelling.");
+  }
+}
