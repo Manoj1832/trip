@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Admin Dashboard | Light Theme</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@latest" defer></script>
   <link rel="stylesheet" href="./css/admin.css" />
+
 </head>
 <body>
   <div class="sidebar">
     <h2>Admin Panel</h2>
     <div class="nav-link" onclick="manageUsers()"><i data-lucide="users"></i> <span>Manage Users</span></div>
-    <div class="nav-link" onclick="manageReports()"><i data-lucide="file-text"></i> <span>Manage Reports</span></div>
+    <div class="nav-link"><i data-lucide="file-text"></i> <span>Add Package</span></div>
     <div class="nav-link" onclick="generatePDF()"><i data-lucide="download"></i> <span>Generate Report</span></div>
   </div>
 
@@ -25,40 +25,47 @@
       </div>
     </div>
 
-    <div class="card" onclick="manageUsers()">
-      <h2>👤 Manage Users</h2>
-      <p>Create, edit, or delete user accounts.</p>
+    <!-- Users Card -->
+    <div class="card">
+      <h2>👤 Users</h2>
+      <h3 style="margin-top:40px;color:#1d4ed8;">User Overview</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Registered</th>
+          </tr>
+        </thead>
+        <tbody id="user-table-body"></tbody>
+      </table>
     </div>
 
-    <div class="card" onclick="manageReports()">
-      <h2>📄 Manage Reports</h2>
-      <p>View and update submitted reports.</p>
+    <!-- Add Package Card -->
+    <div class="card">
+      <h2>➕ Add Travel Package</h2>
+      <form id="add-package-form" onsubmit="return addPackage(event)">
+        <input type="text" id="title" placeholder="Title" required />
+        <input type="text" id="description" placeholder="Description" required />
+        <input type="text" id="flight_price" placeholder="Flight Price (e.g. $1,155)" required />
+        <input type="number" id="extracted_flight_price" placeholder="Extracted Flight Price" required />
+        <input type="text" id="hotel_price" placeholder="Hotel Price (e.g. $80)" required />
+        <input type="number" id="extracted_hotel_price" placeholder="Extracted Hotel Price" required />
+        <input type="text" id="thumbnail" placeholder="Thumbnail URL" required />
+        <button type="submit">Add Package</button>
+      </form>
     </div>
 
+    <!-- PDF Card -->
     <div class="card" onclick="generatePDF()">
       <h2>📥 Generate Report (PDF)</h2>
       <p>Download a summary report in PDF format.</p>
     </div>
 
-    <h3 style="margin-top:40px;color:#1d4ed8;">User Overview</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Status</th>
-          <th>Registered</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>001</td><td>Alice Smith</td><td><span class="badge active">Active</span></td><td>2024-11-21</td></tr>
-        <tr><td>002</td><td>Bob Johnson</td><td><span class="badge pending">Pending</span></td><td>2024-12-03</td></tr>
-        <tr><td>003</td><td>Carol King</td><td><span class="badge active">Active</span></td><td>2025-01-15</td></tr>
-      </tbody>
-    </table>
-
     <div class="footer">&copy; 2025 Admin Dashboard. Built with ☀ and 🎯.</div>
   </div>
-    <script src="./js/admin.js"></script>
+
+  <script src="./js/admin.js"></script>
 </body>
 </html>

@@ -18,7 +18,17 @@ const { Feedback,Destination} = require('./models/models');
 const Booking = require('./models/Booking');
 require('dotenv').config();
 const BookingSummary = require('./models/BookingSummary');
-
+// --- Package Schema ---
+const packageSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  flight_price: String,
+  extracted_flight_price: Number,
+  hotel_price: String,
+  extracted_hotel_price: Number,
+  thumbnail: String,
+});
+const Package = mongoose.model('Package', packageSchema);
 
 const app = express();
 const port = 5000;
@@ -39,8 +49,24 @@ mongoose.connect("mongodb://localhost:27017/travel-tourism", {
     console.log("MongoDB connected...");
 }).catch(err => console.error("MongoDB connection error:", err));
 
-//summary
+//users
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await User.find({}, 'name email');
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
 
+//packages
+app.post('/api/packages', async (req, res) => {
+  const newPackage = new Package(req.body);
+  await newPackage.save();
+  res.status(201).json(newPackage);
+});
+
+//summary
 app.post('/api/booking-summary', async (req, res) => {
   try {
     const {
@@ -148,7 +174,6 @@ const containsOffensiveWords = (text) => {
     return offensiveWords.some(word => lowerText.includes(word));
 };
 
-// ==== Routes ====
 // Bookings
 app.get('/api/bookings', async (req, res) => {
     const { name } = req.query;

@@ -53,4 +53,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (err) {
     console.error("❌ Error saving booking summary:", err);
   }
+
+   // Feedback button click handler
+  btnFeedback.addEventListener('click', () => {
+    // Redirect to feedback page or open feedback modal
+    window.location.href = 'feedback.html'; // adjust as needed
+  });
+
+  // Home button click handler
+  btnHome.addEventListener('click', () => {
+    window.location.href = 'index.html'; // or your homepage url
+  });
+  
 });
