@@ -487,17 +487,26 @@ app.get('/api/popular-destinations', async (req, res) => {
     const { data } = await axios.get('https://serpapi.com/search.json', {
       params: {
         engine: 'google',
-        q: 'popular travel destinations',
+        q: 'popular travel destinations in India',
         api_key: process.env.SERP_API_KEY
       }
     });
-    const destinations = data.popular_destinations?.destinations || [];
+
+    const destinations = data.organic_results?.slice(0, 5).map(result => ({
+      title: result.title,
+      snippet: result.snippet,
+      link: result.link,
+      thumbnail: result.thumbnail || null
+    })) || [];
+
     res.json(destinations);
   } catch (error) {
-    console.error('Error fetching destinations:', error);
+    console.error('Error fetching destinations:', error.message);
     res.status(500).json({ error: 'Failed to fetch destinations' });
   }
 });
+
+
 
 
 // Start server
