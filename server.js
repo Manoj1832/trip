@@ -1,6 +1,7 @@
 const express = require('express');
 const fetch = require("node-fetch");
 const path = require('path');
+const axios = require('axios');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -479,6 +480,25 @@ app.delete('/api/bookings/:type/:id', async (req, res) => {
     res.status(500).json({ success: false, error: 'Failed to cancel booking' });
   }
 });
+
+
+app.get('/api/popular-destinations', async (req, res) => {
+  try {
+    const { data } = await axios.get('https://serpapi.com/search.json', {
+      params: {
+        engine: 'google',
+        q: 'popular travel destinations',
+        api_key: process.env.SERP_API_KEY
+      }
+    });
+    const destinations = data.popular_destinations?.destinations || [];
+    res.json(destinations);
+  } catch (error) {
+    console.error('Error fetching destinations:', error);
+    res.status(500).json({ error: 'Failed to fetch destinations' });
+  }
+});
+
 
 // Start server
 app.listen(port, () => {
