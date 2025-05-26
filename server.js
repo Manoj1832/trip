@@ -17,18 +17,8 @@ const User = require('./models/User');
 const { Feedback,Destination} = require('./models/models');
 const Booking = require('./models/Booking');
 require('dotenv').config();
+const BookingSummary = require('./models/BookingSummary');
 
-const summarySchema = new mongoose.Schema({
-  type: String,
-  booking: Object,
-  item: Object,
-  txnId: String,
-  amount: Number,
-  userDetails: Object,
-  savedAt: { type: Date, default: Date.now }
-});
-
-const BookingSummary = mongoose.model("BookingSummary", summarySchema);
 
 const app = express();
 const port = 5000;
@@ -49,15 +39,38 @@ mongoose.connect("mongodb://localhost:27017/travel-tourism", {
     console.log("MongoDB connected...");
 }).catch(err => console.error("MongoDB connection error:", err));
 
+//summary
 
-app.post("/api/bookings/summary", async (req, res) => {
+app.post('/api/booking-summary', async (req, res) => {
   try {
-    const summary = new BookingSummary(req.body);
-    await summary.save();
-    res.status(201).json({ message: "Summary saved" });
+    const {
+      userEmail,
+      userName,
+      bookings,
+      totalPrice,
+      paymentStatus,
+      paymentDetails
+    } = req.body;
+
+    if (!userEmail || !userName || !Array.isArray(bookings) || bookings.length === 0) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const newSummary = new BookingSummary({
+      userEmail,
+      userName,
+      bookings,
+      totalPrice,
+      paymentStatus: paymentStatus || 'pending',
+      paymentDetails: paymentDetails || {}
+    });
+
+    await newSummary.save();
+
+    res.status(201).json({ message: 'Booking summary saved successfully', bookingSummaryId: newSummary._id });
   } catch (error) {
-    console.error("Summary save error:", error);
-    res.status(500).json({ error: "Failed to save summary" });
+    console.error('Booking summary save error:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 

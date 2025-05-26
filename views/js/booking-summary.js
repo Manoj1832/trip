@@ -1,39 +1,56 @@
-window.addEventListener("DOMContentLoaded", () => {
-  const summaryDiv = document.getElementById("summaryDetails");
-
-  // Retrieve saved data from localStorage
+document.addEventListener("DOMContentLoaded", async () => {
   const txnId = localStorage.getItem("txnId");
-  const amount = localStorage.getItem("amount");
   const bookingId = localStorage.getItem("bookingId");
   const bookingType = localStorage.getItem("bookingType");
+  const amount = localStorage.getItem("amount");
   const seats = localStorage.getItem("seats");
-  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  const userDetails = JSON.parse(localStorage.getItem("userDetails") || "{}");
 
-  if (!bookingId || !userDetails) {
-    summaryDiv.innerHTML = `<p>No booking data found.</p>`;
+  const summaryContainer = document.getElementById("summaryDetails");
+
+  if (!txnId || !bookingId || !bookingType || !userDetails.name) {
+    summaryContainer.innerHTML = `<p class="text-danger">❌ No booking summary found.</p>`;
     return;
   }
 
-  // Build the summary HTML
-  const html = `
+  // Render summary to the page
+  summaryContainer.innerHTML = `
     <div class="detail-row"><span class="label">Transaction ID:</span> <span class="value">${txnId}</span></div>
     <div class="detail-row"><span class="label">Booking ID:</span> <span class="value">${bookingId}</span></div>
     <div class="detail-row"><span class="label">Name:</span> <span class="value">${userDetails.name}</span></div>
     <div class="detail-row"><span class="label">Email:</span> <span class="value">${userDetails.email}</span></div>
-    <div class="detail-row"><span class="label">Age:</span> <span class="value">${userDetails.age || 'N/A'}</span></div>
+    <div class="detail-row"><span class="label">Age:</span> <span class="value">${userDetails.age}</span></div>
     <div class="detail-row"><span class="label">Seats:</span> <span class="value">${seats}</span></div>
-    <div class="detail-row"><span class="label">Booking Type:</span> <span class="value">${bookingType === 'train' ? 'Train Ticket' : 'Flight Ticket'}</span></div>
-    <div class="detail-row"><span class="label">Total Price:</span> <span class="value">₹${amount}</span></div>
+    <div class="detail-row"><span class="label">Type:</span> <span class="value">${bookingType}</span></div>
+    <div class="detail-row"><span class="label">Total Amount:</span> <span class="value">₹${amount}</span></div>
   `;
 
-  summaryDiv.innerHTML = html;
+  // Save summary to backend
+  try {
+    const response = await fetch("http://localhost:5000/api/booking-summaries", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        txnId,
+        bookingId,
+        bookingType,
+        user: {
+          name: userDetails.name,
+          email: userDetails.email,
+          age: userDetails.age,
+        },
+        seats: parseInt(seats),
+        amount: parseFloat(amount),
+        date: new Date().toISOString()
+      })
+    });
 
-  // Optional: Add button event listeners
-  document.getElementById("btnHome").addEventListener("click", () => {
-    window.location.href = "index.html"; // Change to your home page
-  });
-
-  document.getElementById("btnFeedback").addEventListener("click", () => {
-    window.location.href = "feedback.html"; // Change to your feedback page
-  });
+    if (!response.ok) {
+      console.error("❌ Failed to save booking summary");
+    } else {
+      console.log("✅ Booking summary saved to backend.");
+    }
+  } catch (err) {
+    console.error("❌ Error saving booking summary:", err);
+  }
 });
