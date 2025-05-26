@@ -44,9 +44,7 @@ function closeModal() {
   document.getElementById('bookingModal').style.display = 'none';
 }
 
-document.getElementById("userDetailsForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-
+function confirmBooking() {
   const name = document.getElementById("passengerName").value.trim();
   const email = document.getElementById("passengerEmail").value.trim();
   const age = document.getElementById("passengerAge").value.trim();
@@ -58,7 +56,8 @@ document.getElementById("userDetailsForm").addEventListener("submit", function (
   }
 
   sessionStorage.setItem("userDetails", JSON.stringify({ name, email, age, seats }));
-  closeUserModal();
-  window.location.href = `payment.html?id=${selectedFlightId}&type=train&price=${selectedFlightPrice}`;
-});
+  closeModal();
+  window.location.href = `payment.html?id=${selectedFlightId}&type=flight&price=${selectedFlightPrice}`;
+}
+
 
