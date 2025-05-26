@@ -1,4 +1,5 @@
 const express = require('express');
+const fetch = require("node-fetch");
 const path = require('path');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
@@ -7,6 +8,7 @@ const twilio = require('twilio');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config();
+const { GoogleSearch } = require('google-search-results-nodejs');
 
 // Bus Booking Schema
 const busBookingSchema = new mongoose.Schema({
@@ -53,6 +55,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+app.use("/chatbot", express.static(__dirname + "/public/chatbot"));
 
 const client = twilio(
   process.env.TWILIO_ACCOUNT_SID,
@@ -450,6 +453,26 @@ app.post('/api/confirm-bus-payment', async (req, res) => {
 });
 
 // Chatbot route
+
+const search = new GoogleSearch(process.env.SERPAPI_KEY);
+
+app.post('/chat', (req, res) => {
+  const query = req.body.message;
+  if (!query) return res.status(400).json({ error: 'Message is required' });
+
+  const params = {
+    engine: "google",
+    q: query,
+    location: "India",  // or any location
+    hl: "en"
+  };
+
+  search.json(params, (data) => {
+    const result = data.organic_results?.[0]?.snippet || "No result found.";
+    res.json({ response: result });
+  });
+});
+
 
 // Start server
 app.listen(port, () => {
