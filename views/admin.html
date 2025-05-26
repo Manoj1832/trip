@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard | Light Theme</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/admin.css" />
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Admin Panel</h2>
+    <div class="nav-link" onclick="manageUsers()"><i data-lucide="users"></i> <span>Manage Users</span></div>
+    <div class="nav-link" onclick="manageReports()"><i data-lucide="file-text"></i> <span>Manage Reports</span></div>
+    <div class="nav-link" onclick="generatePDF()"><i data-lucide="download"></i> <span>Generate Report</span></div>
+  </div>
+
+  <div class="main">
+    <div class="header">
+      <h1 style="color:#1d4ed8">Welcome, Admin</h1>
+      <div class="search-box">
+        <input type="text" placeholder="Search users...">
+      </div>
+    </div>
+
+    <div class="card" onclick="manageUsers()">
+      <h2>👤 Manage Users</h2>
+      <p>Create, edit, or delete user accounts.</p>
+    </div>
+
+    <div class="card" onclick="manageReports()">
+      <h2>📄 Manage Reports</h2>
+      <p>View and update submitted reports.</p>
+    </div>
+
+    <div class="card" onclick="generatePDF()">
+      <h2>📥 Generate Report (PDF)</h2>
+      <p>Download a summary report in PDF format.</p>
+    </div>
+
+    <h3 style="margin-top:40px;color:#1d4ed8;">User Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Registered</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>001</td><td>Alice Smith</td><td><span class="badge active">Active</span></td><td>2024-11-21</td></tr>
+        <tr><td>002</td><td>Bob Johnson</td><td><span class="badge pending">Pending</span></td><td>2024-12-03</td></tr>
+        <tr><td>003</td><td>Carol King</td><td><span class="badge active">Active</span></td><td>2025-01-15</td></tr>
+      </tbody>
+    </table>
+
+    <div class="footer">&copy; 2025 Admin Dashboard. Built with ☀ and 🎯.</div>
+  </div>
+    <script src="./js/admin.js"></script>
+</body>
+</html>

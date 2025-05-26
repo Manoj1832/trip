@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Bookings | TripTrekker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="./css/booking-details.css">
+</head>
+<body class="bg-light">
+
+  <div class="container py-5">
+    <h1 class="text-center mb-4">My Booking Details</h1>
+
+    <div class="accordion" id="bookingAccordion">
+
+      <!-- Flight Bookings -->
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="flightHeading">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flightCollapse" aria-expanded="true">
+            ✈️ Flight Bookings
+          </button>
+        </h2>
+        <div id="flightCollapse" class="accordion-collapse collapse show" data-bs-parent="#bookingAccordion">
+          <div class="accordion-body" id="flight-bookings">
+            <p class="text-muted">No flight bookings found.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Train Bookings -->
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="trainHeading">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#trainCollapse">
+            🚆 Train Bookings
+          </button>
+        </h2>
+        <div id="trainCollapse" class="accordion-collapse collapse" data-bs-parent="#bookingAccordion">
+          <div class="accordion-body" id="train-bookings">
+            <p class="text-muted">No train bookings found.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Package Bookings -->
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="packageHeading">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#packageCollapse">
+            🧳 Travel Packages
+          </button>
+        </h2>
+        <div id="packageCollapse" class="accordion-collapse collapse" data-bs-parent="#bookingAccordion">
+          <div class="accordion-body" id="package-bookings">
+            <p class="text-muted">No package bookings found.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./js/booking-details.js"></script>
+</body>
+</html>

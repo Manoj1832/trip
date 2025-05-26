@@ -1,0 +1,433 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #e0f7fa;
+  color: #222;
+  line-height: 1.6;
+}
+
+/* Chatbot Sidebar (Initially Hidden) */
+#chatbot-sidebar {
+  display: none;
+}
+#chatbot-sidebar.show {
+  display: block;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #03a9f4;
+  color: #fff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.navbar .logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.navbar nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.navbar nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.navbar nav a:hover {
+  color: #000;
+}
+
+#theme-toggle {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(to right, #81d4fa, #4fc3f7);
+  color: #000;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.btn-primary {
+  background-color: #0288d1;
+  color: #fff;
+  padding: 0.75rem 2rem;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #0277bd;
+}
+
+/* Booking Options */
+.section {
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.booking-cards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.booking-card {
+  background: #ffffff;
+  border: 1px solid #bbdefb;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 160px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  cursor: pointer;
+}
+
+.booking-card i {
+  font-size: 2rem;
+  color: #0288d1;
+  margin-bottom: 0.5rem;
+}
+
+.booking-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Destinations */
+.destinations {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.destination-card {
+  width: 250px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.destination-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.destination-card h3 {
+  margin: 0.8rem 0 0.4rem;
+  color: #0288d1;
+}
+
+.destination-card:hover {
+  transform: scale(1.05);
+}
+
+/* Features */
+.features {
+  background-color: #b2ebf2;
+}
+
+.feature-boxes {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.feature {
+  max-width: 220px;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+.feature i {
+  font-size: 2rem;
+  color: #0288d1;
+  margin-bottom: 1rem;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+}
+
+/* Reviews (Swiper) */
+.review-card {
+  background: #f1f1f1;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  max-width: 500px;
+  margin: auto;
+}
+
+.swiper {
+  padding: 2rem 0;
+}
+
+/* Chatbot */
+#chat-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #0288d1;
+  color: #fff;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.chatbot {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 300px;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+  display: none;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.chat-header {
+  background: #03a9f4;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.chat-body {
+  padding: 1rem;
+  max-height: 200px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+  color: #000;
+  background-color: #e0f7fa;
+}
+
+.bot-message,
+.user-message {
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+.avatar-bot,
+.avatar-user {
+  margin-right: 0.5rem;
+}
+
+.chat-input {
+  display: flex;
+  border-top: 1px solid #ddd;
+  padding: 0.5rem;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.chat-input button {
+  background: #0288d1;
+  border: none;
+  color: #fff;
+  padding: 0.5rem 0.8rem;
+  margin-left: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Footer */
+footer {
+  background: #0288d1;
+  color: #fff;
+  text-align: center;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar nav ul {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .booking-cards,
+  .destinations,
+  .feature-boxes {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+/* Modal Overlay */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal Box */
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  position: relative;
+  transition: all 0.3s ease-in-out;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Close Button */
+.close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #333;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Modal Inputs */
+.modal-content input {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  margin: 1rem 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+/* Modal Button */
+.modal-content button {
+  background: #00bcd4;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+.modal-content button:hover {
+  background: #0097a7;
+}
+
+/* Modal Title */
+.modal-title {
+  font-weight: 600;
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+/* Remove focus glow */
+button:focus,
+input:focus {
+  box-shadow: none !important;
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Responsive Modal */
+@media (max-width: 500px) {
+  .modal-content {
+    width: 90%;
+    padding: 1.5rem;
+  }
+}
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+
+button:focus, input:focus {
+  box-shadow: none !important;
+  border-color: #007bff;
+}
+.btn-logout {
+  background: transparent;
+  border: none;
+  color: white; /* or match your navbar text color */
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.3rem 0.6rem;
+  transition: color 0.3s ease;
+}
+
+.btn-logout:hover {
+  color: #ff4d4d; /* or any hover color */
+}

@@ -44,26 +44,21 @@ function closeModal() {
   document.getElementById('bookingModal').style.display = 'none';
 }
 
-function confirmBooking() {
-  const name = document.getElementById('passengerName').value;
-  const age = document.getElementById('passengerAge').value;
-  const email = document.getElementById('passengerEmail').value;
+document.getElementById("userDetailsForm").addEventListener("submit", function (e) {
+  e.preventDefault();
 
-  if (!name || !age || !email) {
-    alert("Please fill all passenger details.");
+  const name = document.getElementById("passengerName").value.trim();
+  const email = document.getElementById("passengerEmail").value.trim();
+  const age = document.getElementById("passengerAge").value.trim();
+  const seats = document.getElementById("passengerSeats").value.trim();
+
+  if (!name || !email || !age || !seats) {
+    alert("Please fill all fields.");
     return;
   }
 
-  const queryParams = new URLSearchParams({
-    id: selectedFlightId,
-    type: 'flight',
-    name,
-    age,
-    email,
-    price: selectedFlightPrice
-  }).toString();
-
-  // Redirect to the new flight-specific payment page
-  window.location.href = `payment.html?${queryParams}`;
-}
+  sessionStorage.setItem("userDetails", JSON.stringify({ name, email, age, seats }));
+  closeUserModal();
+  window.location.href = `payment.html?id=${selectedFlightId}&type=train&price=${selectedFlightPrice}`;
+});
 

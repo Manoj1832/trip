@@ -10,19 +10,6 @@ const cors = require('cors');
 require('dotenv').config();
 const { GoogleSearch } = require('google-search-results-nodejs');
 
-// Bus Booking Schema
-const busBookingSchema = new mongoose.Schema({
-  userName: String,
-  userEmail: String,
-  from: String,
-  to: String,
-  travelDate: String,
-  operator: String,
-  price: Number,
-  seats: Number,
-  bookingDate: { type: Date, default: Date.now }
-});
-
 const packageSchema = new mongoose.Schema({
   name: String,
   description: String,
@@ -43,24 +30,20 @@ const FlightBooking = require('./models/FlightBooking');
 const Flight = require('./models/Flight');
 const Train = require('./models/Train');
 const TrainBooking = require('./models/TrainBooking');
-
-const { User,Feedback,Payment,Report,Destination} = require('./models/FlightBooking');
-const Booking = require('./models/FlightBooking');
+const PaymentSchema = require('./models/Payment');
+const User = require('./models/User');
+const { Feedback,Destination} = require('./models/models');
+const Booking = require('./models/Booking');
 
 const app = express();
 const port = 5000;
 
 // Middleware
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 app.use("/chatbot", express.static(__dirname + "/public/chatbot"));
-
-const client = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
 
 // MongoDB connection
 mongoose.connect("mongodb://localhost:27017/travel-tourism", {
@@ -70,6 +53,34 @@ mongoose.connect("mongodb://localhost:27017/travel-tourism", {
 }).then(() => {
     console.log("MongoDB connected...");
 }).catch(err => console.error("MongoDB connection error:", err));
+
+// Signup
+app.post('/api/signup', async (req, res) => {
+  const { name, email, password } = req.body;
+  const existing = await User.findOne({ email });
+  if (existing) return res.status(400).json({ message: 'Email already exists' });
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = new User({ name, email, password: hashedPassword });
+  await newUser.save();
+
+  res.status(201).json({ message: 'Signup successful' });
+});
+
+// Login
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) return res.status(401).json({ message: 'Invalid credentials' });
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) return res.status(401).json({ message: 'Incorrect password' });
+
+  res.status(200).json({ 
+    message: 'Login successful', 
+    user: { name: user.name, email: user.email } 
+  });
+});
 
 // Offensive words filter for feedback
 const offensiveWords = [
@@ -84,46 +95,44 @@ const containsOffensiveWords = (text) => {
 };
 
 // ==== Routes ====
+// Signup Route
+app.post("/api/signup", async (req, res) => {
+  const { name, email, password } = req.body;
 
-// Register User
-app.post('/api/register', async (req, res) => {
-    try {
-        const { name, email, password } = req.body;
-        const existingUser = await User.findOne({ email });
-        if (existingUser) return res.status(400).json({ error: 'Email already registered' });
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: "Email already registered." });
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ name, email, password: hashedPassword });
-        await user.save();
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ name, email, password: hashedPassword });
+    await newUser.save();
 
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Registration failed' });
-    }
+    res.status(201).json({ message: "User created successfully." });
+  } catch (error) {
+    console.error("Signup error:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
 });
 
-// Login User
-app.post('/api/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
+// Login Route
+app.post("/api/login", async (req, res) => {
+  const { email, password } = req.body;
 
-        const user = await User.findOne({ email });
-        if (!user) return res.status(400).json({ error: 'User not found' });
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "Invalid email or password." });
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ error: 'Invalid password' });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Invalid email or password." });
 
-        res.json({
-            message: 'Login successful',
-            token: 'dummy_token', // Placeholder token
-            user: { name: user.name, email: user.email }
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Login failed' });
-    }
+    // You can return a token here if needed
+    res.json({ message: "Login successful", user: { name: user.name, email: user.email } });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
 });
+
 
 // Bookings
 app.get('/api/bookings', async (req, res) => {
@@ -190,69 +199,6 @@ app.post('/api/payments', async (req, res) => {
   }
 });
 
-// Packages
-app.post('/api/packages', async (req, res) => {
-    try {
-        const { title, description, price, imageUrl } = req.body;
-        const newPackage = new Package({ title, description, price, imageUrl });
-        await newPackage.save();
-        res.status(201).json({ message: 'Package added successfully', package: newPackage });
-    } catch (error) {
-        res.status(500).json({ message: 'Error adding package', error });
-    }
-});
-
-app.get('/api/packages', async (req, res) => {
-    try {
-        const packages = await Package.find();
-        res.json(packages);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching packages', error });
-    }
-});
-
-// Users (admin)
-app.post('/api/users', async (req, res) => {
-    try {
-        const { name, email, role } = req.body;
-        const newUser = new User({ name, email, role });
-        await newUser.save();
-        res.status(201).json({ message: 'User added successfully', user: newUser });
-    } catch (error) {
-        res.status(500).json({ message: 'Error adding user', error });
-    }
-});
-
-app.get('/api/users', async (req, res) => {
-    try {
-        const users = await User.find();
-        res.json(users);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching users', error });
-    }
-});
-
-// Reports
-app.post('/api/reports', async (req, res) => {
-    try {
-        const { type, content } = req.body;
-        const newReport = new Report({ type, content });
-        await newReport.save();
-        res.status(201).json({ message: 'Report generated successfully', report: newReport });
-    } catch (error) {
-        res.status(500).json({ message: 'Error generating report', error });
-    }
-});
-
-app.get('/api/reports', async (req, res) => {
-    try {
-        const reports = await Report.find();
-        res.json(reports);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching reports', error });
-    }
-});
-
 // Destinations
 app.get('/api/destinations', async (req, res) => {
   const { travellers = 1, date } = req.query;
@@ -266,18 +212,6 @@ app.get('/api/destinations', async (req, res) => {
   });
 
   res.json(priced);
-});
-
-
-// Suggestions for from/to input
-app.get('/api/destinations/suggest', async (req, res) => {
-  const { from, to } = req.query;
-  try {
-    const suggestions = await Destination.find({ name: { $nin: [from, to] } }).limit(5);
-    res.json(suggestions);
-  } catch (err) {
-    res.status(500).json({ message: 'Suggestion failed' });
-  }
 });
 
 app.get('/api/flights', async (req, res) => {
@@ -394,26 +328,6 @@ app.post('/api/book-bus', async (req, res) => {
   }
 });
 
-app.get('/api/packages', async (req, res) => {
-  try {
-    const packages = await TravelPackage.find();
-    res.json(packages);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch packages" });
-  }
-});
-
-// Package Route
-app.post('/api/book-package', async (req, res) => {
-  try {
-    const booking = new PackageBooking(req.body);
-    await booking.save();
-    res.status(200).json({ success: true, message: 'Package booked successfully' });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Error booking package' });
-  }
-});
-
 // Payment confirmation for Flight bookings
 app.post('/api/confirm-flight-payment', async (req, res) => {
   const { bookingId, paymentStatus, transactionId } = req.body;
@@ -453,7 +367,6 @@ app.post('/api/confirm-bus-payment', async (req, res) => {
 });
 
 // Chatbot route
-
 const search = new GoogleSearch(process.env.SERPAPI_KEY);
 
 app.post('/chat', (req, res) => {
@@ -473,8 +386,80 @@ app.post('/chat', (req, res) => {
   });
 });
 
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+// Endpoint to send OTP
+app.post('/send-otp', async (req, res) => {
+  const { phone } = req.body;
+  try {
+    await client.verify.v2.services(process.env.TWILIO_VERIFY_SERVICE_SID)
+      .verifications
+      .create({ to: `+91${phone}`, channel: 'sms' });
+    res.json({ message: 'OTP Sent Successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to send OTP', error: error.message });
+  }
+});
+
+// Endpoint to verify OTP
+app.post('/verify-otp', async (req, res) => {
+  const { phone, otp } = req.body;
+  try {
+    const verification_check = await client.verify.v2.services(process.env.TWILIO_VERIFY_SERVICE_SID)
+      .verificationChecks
+      .create({ to: `+91${phone}`, code: otp });
+
+    if (verification_check.status === 'approved') {
+      res.json({ success: true, message: 'OTP Verified Successfully' });
+    } else {
+      res.json({ success: false, message: 'Invalid OTP' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Verification Failed', error: error.message });
+  }
+});
+
+app.get('/api/user-bookings', async (req, res) => {
+  const { email } = req.query;
+  if (!email) return res.status(400).json({ error: 'Email is required' });
+
+  try {
+    const flights = await FlightBooking.find({ userEmail: email }).lean();
+    const trains = await TrainBooking.find({ userEmail: email }).lean();
+    const packages = await PackageBooking.find({ userEmail: email }).lean();
+
+    res.json({ flights, trains, packages });
+  } catch (error) {
+    console.error("Booking Fetch Error:", error); // <== See this in terminal
+    res.status(500).json({ error: 'Failed to fetch bookings' });
+  }
+});
+
+// Route to cancel booking by type and id
+app.delete('/api/cancel-booking/:type/:id', async (req, res) => {
+  const { type, id } = req.params;
+  const collections = {
+    flight: FlightBooking,
+    train: TrainBooking,
+    package: PackageBooking,
+  };
+
+  const Model = collections[type];
+  if (!Model) return res.status(400).json({ error: 'Invalid booking type' });
+
+  try {
+    await Model.findByIdAndDelete(id);
+    res.json({ message: `${type.charAt(0).toUpperCase() + type.slice(1)} booking cancelled` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to cancel booking' });
+  }
+});
 
 // Start server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
+
 });
