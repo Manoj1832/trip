@@ -26,19 +26,23 @@
 
   <div id="flightResults"></div>
 
-  <!-- Enhanced Modal -->
+  <!-- Modal -->
   <div id="bookingModal" class="modal-custom">
     <div class="modal-content-custom">
       <span class="close" onclick="closeModal()">&times;</span>
       <h4 class="mb-4"><i class="bi bi-person-fill"></i> Enter Passenger Details</h4>
-      <input type="text" id="passengerName" placeholder="Name" required />
-      <input type="number" id="passengerAge" placeholder="Age" required />
-      <input type="email" id="passengerEmail" placeholder="Email" required />
-      <input type="number" id="passengerSeats" placeholder="No. of Seats" required>
-      <div class="d-flex justify-content-between">
-        <button onclick="confirmBooking()" class="btn btn-success"><i class="bi bi-check-circle"></i> Proceed to Payment</button>
-        <button onclick="closeModal()" class="btn btn-danger"><i class="bi bi-x-circle"></i> Cancel</button>
-      </div>
+      
+      <form id="userDetailsForm">
+        <input type="text" id="passengerName" placeholder="Name" required />
+        <input type="number" id="passengerAge" placeholder="Age" required />
+        <input type="email" id="passengerEmail" placeholder="Email" required />
+        <input type="number" id="passengerSeats" placeholder="No. of Seats" required>
+        <div class="d-flex justify-content-between mt-3">
+          <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Proceed to Payment</button>
+          <button type="button" onclick="closeModal()" class="btn btn-danger"><i class="bi bi-x-circle"></i> Cancel</button>
+        </div>
+      </form>
+
     </div>
   </div>
 
