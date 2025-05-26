@@ -93,35 +93,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ========== Login Form ==========
   const loginForm = document.getElementById("loginForm");
-  if (loginForm) {
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
 
-      try {
-        const res = await fetch("http://localhost:5000/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        });
+    // Define your admin credentials here
+    const adminEmail = "admin@example.com";     // Replace with actual admin email
+    const adminPassword = "admin123";           // Replace with actual admin password
 
-        const data = await res.json();
-        if (res.ok) {
-          alert("Login successful!");
-          userSession = data.user;
-          localStorage.setItem("tripUser", JSON.stringify(data.user));
-          closeLoginModal();
-          window.location.reload(); // Optional: reload to refresh state
-        } else {
-          alert(data.message);
-        }
-      } catch (err) {
-        console.error("Login Error:", err);
-        alert("Login failed. Please try again.");
+    // Check admin credentials first
+    if (email === adminEmail && password === adminPassword) {
+      alert("Admin login successful!");
+      // You can also store admin info in localStorage if needed
+      localStorage.setItem("tripUser", JSON.stringify({ name: "Admin", email, isAdmin: true }));
+      window.location.href = "admin.html";
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("Login successful!");
+        userSession = data.user;
+        localStorage.setItem("tripUser", JSON.stringify(data.user));
+        closeLoginModal();
+        window.location.reload(); // Optional: reload to refresh state
+      } else {
+        alert(data.message);
       }
-    });
-  }
+    } catch (err) {
+      console.error("Login Error:", err);
+      alert("Login failed. Please try again.");
+    }
+  });
+}
+
 
   // ========== Page Guard ==========
   const protectedLinks = document.querySelectorAll("a[href*='flight'], a[href*='train'], a[href*='bus'], a[href*='packages']");

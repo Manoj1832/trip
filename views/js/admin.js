@@ -1,5 +1,5 @@
     async function loadUsers() {
-      const res = await fetch('http://localhost:3000/api/users');
+      const res = await fetch('http://localhost:5000/api/users');
       const users = await res.json();
       const tbody = document.getElementById("user-table-body");
       tbody.innerHTML = "";
@@ -27,7 +27,7 @@
         thumbnail: document.getElementById("thumbnail").value
       };
 
-      const res = await fetch('http://localhost:3000/api/packages', {
+      const res = await fetch('http://localhost:5000/api/packages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
