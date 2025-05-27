@@ -11,7 +11,8 @@ document.addEventListener("DOMContentLoaded", async () => {
  
 
   try {
-    const res = await fetch(`http://localhost:5000/api/bookings/${email}/`);
+    const res = await fetch(`http://localhost:5000/api/bookings/${email}`);
+
     const data = await res.json();
 
     renderBookings(data.flights, 'flight-bookings', 'flight');
