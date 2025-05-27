@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     renderBookings(data.flights, 'flight-bookings', 'flight');
     renderBookings(data.trains, 'train-bookings', 'train');
-    // renderBookings(data.packages, 'package-bookings', 'package');
+    renderBookings(data.packages, 'package-bookings', 'package');
   } catch (err) {
     console.error("Failed to load bookings:", err);
     alert("Failed to fetch your bookings. Please try again later.");

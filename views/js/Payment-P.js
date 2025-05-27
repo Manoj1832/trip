@@ -4,11 +4,8 @@ const bookingData = JSON.parse(localStorage.getItem("bookingData"));
 if (bookingData) {
  document.getElementById("summary-name").textContent = bookingData.name || "";
  document.getElementById("summary-email").textContent = bookingData.email || "";
- document.getElementById("summary-phone").textContent = bookingData.phone || "";
  document.getElementById("summary-destination").textContent = bookingData.destination || "";
- document.getElementById("summary-checkin").textContent = bookingData.checkin || "";
- document.getElementById("summary-checkout").textContent = bookingData.checkout || "";
- document.getElementById("summary-persons").textContent = bookingData.persons || "";
+ document.getElementById("summary-persons").textContent = bookingData.seats || "";
  document.getElementById("summary-price").textContent = bookingData.price || "";
 } else {
  const summaryBox = document.getElementById("booking-summary");
@@ -102,18 +99,56 @@ if (bookingData) {
  otpMessage.textContent = "Please enter the OTP.";
  return;
  }
- if (otpInput.value.trim() == generatedOTP) {
- otpMessage.style.color = "green";
- otpMessage.textContent = "Payment verified successfully! ✅";
- setTimeout(() => {
- // You can submit the form or redirect here
- paymentForm.reset();
- otpContainer.style.display = "none";
- otpMessage.textContent = "";
- alert("Payment completed!");
- }, 1200);
- } else {
- otpMessage.style.color = "red";
- otpMessage.textContent = "Incorrect OTP. Please try again.";
- }
+// Inside OTP verification block
+if (otpInput.value.trim() == generatedOTP) {
+  otpMessage.style.color = "green";
+  otpMessage.textContent = "Payment verified successfully! ✅";
+
+  // Get all booking and payment data
+  const bookingData = JSON.parse(localStorage.getItem("bookingData"));
+  const paymentData = {
+    name: document.getElementById("card-name").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    cardNumber: document.getElementById("card-number").value.trim(),
+    cvv: document.getElementById("cvv").value.trim(),
+    expiry: document.getElementById("expiry").value.trim(),
+    otp: generatedOTP
+  };
+
+  const packageBooking = {
+    ...bookingData,
+    paymentInfo: paymentData,
+    bookingDate: new Date().toISOString()
+  };
+
+  // Send data to backend
+  fetch("http://localhost:5000/api/package-bookings", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(packageBooking)
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log("Booking saved:", data);
+    setTimeout(() => {
+      paymentForm.reset();
+      otpContainer.style.display = "none";
+      otpMessage.textContent = "";
+      alert("Payment completed!");
+      window.location.href = "./feedback.html";
+      //localStorage.removeItem("bookingData"); // clear old data
+    }, 1200);
+  })
+  .catch(err => {
+    console.error("Failed to save booking:", err);
+    otpMessage.textContent = "Error saving booking. Please try again.";
+    otpMessage.style.color = "red";
+  });
+} else {
+  otpMessage.style.color = "red";
+  otpMessage.textContent = "Incorrect OTP. Please try again.";
+}
+
  });

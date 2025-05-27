@@ -18,15 +18,12 @@
     const paymentData = {
       name: booking.name,
       email: booking.email,
-      phone: booking.phone || "", // add phone if available
       destination: booking.destination,
-      checkin: booking.checkin || "", // optional fields if needed
-      checkout: booking.checkout || "",
       persons: booking.seats,
       price: booking.totalPrice
     };
     localStorage.setItem("bookingData", JSON.stringify(paymentData));
   }
-  window.location.href = "payment.html";
+  window.location.href = "Payment-P.html";
 }
 

@@ -1,7 +1,7 @@
 // ========== Modal Utility Functions ==========
 function showLogin() {
   const loginModal = document.getElementById("loginModal");
-  if (loginModal) loginModal.style.display = "block";
+  if (loginModal) loginModal.style.display = "flex";
 }
 
 function closeLoginModal() {
@@ -12,7 +12,7 @@ function closeLoginModal() {
 function showSignup() {
   closeLoginModal();
   const signupModal = document.getElementById("signupModal");
-  if (signupModal) signupModal.style.display = "block";
+  if (signupModal) signupModal.style.display = "flex";
 }
 
 function closeSignupModal() {

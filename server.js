@@ -13,7 +13,6 @@ const FlightBooking = require('./models/FlightBooking');
 const Flight = require('./models/Flight');
 const Train = require('./models/Train');
 const TrainBooking = require('./models/TrainBooking');
-const PackageBooking = require('./models/PackageBooking');
 const PaymentSchema = require('./models/Payment');
 const User = require('./models/User');
 const { Feedback} = require('./models/models');
@@ -38,6 +37,27 @@ mongoose.connect("mongodb://localhost:27017/travel-tourism", {
 }).then(() => {
     console.log("MongoDB connected...");
 }).catch(err => console.error("MongoDB connection error:", err));
+
+
+const PackageBookingSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  destination: String,
+  seats: Number,
+  price: Number,
+  paymentInfo: {
+    name: String,
+    phone: String,
+    cardNumber: String,
+    cvv: String,
+    expiry: String,
+    otp: String
+  },
+  bookingDate: Date
+});
+
+const PackageBooking = mongoose.model("PackageBooking", PackageBookingSchema);
+
 
 //users
 app.get('/api/users', async (req, res) => {
@@ -393,21 +413,8 @@ app.post('/verify-otp', async (req, res) => {
   }
 });
 
-app.get('/api/user-bookings', async (req, res) => {
-  const { email } = req.query;
-  if (!email) return res.status(400).json({ error: 'Email is required' });
 
-  try {
-    const flights = await FlightBooking.find({ userEmail: email }).lean();
-    const trains = await TrainBooking.find({ userEmail: email }).lean();
-    const packages = await PackageBooking.find({ userEmail: email }).lean();
 
-    res.json({ flights, trains, packages });
-  } catch (error) {
-    console.error("Booking Fetch Error:", error); // <== See this in terminal
-    res.status(500).json({ error: 'Failed to fetch bookings' });
-  }
-});
 
 // Fetch all bookings by email
 // ✅ Keep this version
@@ -419,9 +426,9 @@ app.get('/api/bookings', async (req, res) => {
   try {
     const flights = await FlightBooking.find({ email });
     const trains = await TrainBooking.find({ email });
-    // const packages = await PackageBooking.find({ email });
+    const packages = await PackageBooking.find({ email });
 
-    res.json({ flights, trains});
+    res.json({ flights, trains,packages});
   } catch (err) {
     console.error("Fetch bookings error:", err);
     res.status(500).json({ error: 'Failed to fetch bookings' });
@@ -459,6 +466,36 @@ app.delete('/api/bookings/:type/:id', async (req, res) => {
   }
 });
 
+
+
+app.post('/api/package-bookings', async (req, res) => {
+  try {
+    const booking = new PackageBooking(req.body);
+    await booking.save();
+    res.status(201).json({ message: 'Package booking saved', bookingId: booking._id });
+  } catch (err) {
+    console.error("Package booking failed:", err);
+    res.status(500).json({ error: 'Package booking failed' });
+  }
+});
+
+
+
+app.get('/api/user-bookings', async (req, res) => {
+  const { email } = req.query;
+  if (!email) return res.status(400).json({ error: 'Email is required' });
+
+  try {
+    const flights = await FlightBooking.find({ userEmail: email }).lean();
+    const trains = await TrainBooking.find({ userEmail: email }).lean();
+    const packages = await PackageBooking.find({ userEmail: email }).lean();
+
+    res.json({ flights, trains, packages });
+  } catch (error) {
+    console.error("Booking Fetch Error:", error); // <== See this in terminal
+    res.status(500).json({ error: 'Failed to fetch bookings' });
+  }
+});
 
 // Start server
 app.listen(port, () => {
