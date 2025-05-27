@@ -97,6 +97,7 @@ if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("loginEmail").value;
+    localStorage.setItem('email',email);
     const password = document.getElementById("loginPassword").value;
 
     // Define your admin credentials here

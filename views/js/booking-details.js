@@ -1,15 +1,17 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const user = JSON.parse(localStorage.getItem('tripUser'));
+  const email = localStorage.getItem('email');
+
   if (!user || !user.email) {
     alert("Please log in to view bookings.");
     window.location.href = "index.html";
     return;
   }
 
-  const email = user.email;
+ 
 
   try {
-    const res = await fetch(`http://localhost:5000/api/bookings?email=${email}`);
+    const res = await fetch(`http://localhost:5000/api/bookings/${email}/`);
     const data = await res.json();
 
     renderBookings(data.flights, 'flight-bookings', 'flight');

@@ -20,18 +20,6 @@ const { Feedback} = require('./models/models');
 require('dotenv').config();
 const BookingSummary = require('./models/BookingSummary');
 
-// --- Package Schema ---
-const packageSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  flight_price: String,
-  extracted_flight_price: Number,
-  hotel_price: String,
-  extracted_hotel_price: Number,
-  thumbnail: String,
-});
-const Package = mongoose.model('Package', packageSchema);
-
 const app = express();
 const port = 5000;
 
@@ -176,18 +164,18 @@ const containsOffensiveWords = (text) => {
     return offensiveWords.some(word => lowerText.includes(word));
 };
 
-// Bookings
-app.get('/api/bookings', async (req, res) => {
-    const { name } = req.query;
-    if (!name) return res.status(400).json({ message: 'Name is required' });
+// // Bookings
+// app.get('/api/bookings', async (req, res) => {
+//     const { name } = req.query;
+//     if (!name) return res.status(400).json({ message: 'Name is required' });
 
-    try {
-        const bookings = await Booking.find({ name });
-        res.json(bookings);
-    } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
-    }
-});
+//     try {
+//         const bookings = await Booking.find({ name });
+//         res.json(bookings);
+//     } catch (error) {
+//         res.status(500).json({ message: 'Server error', error });
+//     }
+// });
 
 // Feedback
 app.post('/api/feedback', async (req, res) => {
@@ -434,7 +422,7 @@ app.get('/api/user-bookings', async (req, res) => {
 });
 
 // Fetch all bookings by email
-app.get('/api/bookings', async (req, res) => {
+app.get('/api/bookings/:email', async (req, res) => {
   const { email } = req.query;
 
   if (!email) return res.status(400).json({ error: 'Email is required' });
@@ -480,33 +468,6 @@ app.delete('/api/bookings/:type/:id', async (req, res) => {
     res.status(500).json({ success: false, error: 'Failed to cancel booking' });
   }
 });
-
-
-app.get('/api/popular-destinations', async (req, res) => {
-  try {
-    const { data } = await axios.get('https://serpapi.com/search.json', {
-      params: {
-        engine: 'google',
-        q: 'popular travel destinations in India',
-        api_key: process.env.SERP_API_KEY
-      }
-    });
-
-    const destinations = data.organic_results?.slice(0, 5).map(result => ({
-      title: result.title,
-      snippet: result.snippet,
-      link: result.link,
-      thumbnail: result.thumbnail || null
-    })) || [];
-
-    res.json(destinations);
-  } catch (error) {
-    console.error('Error fetching destinations:', error.message);
-    res.status(500).json({ error: 'Failed to fetch destinations' });
-  }
-});
-
-
 
 
 // Start server
