@@ -164,18 +164,6 @@ const containsOffensiveWords = (text) => {
     return offensiveWords.some(word => lowerText.includes(word));
 };
 
-// // Bookings
-// app.get('/api/bookings', async (req, res) => {
-//     const { name } = req.query;
-//     if (!name) return res.status(400).json({ message: 'Name is required' });
-
-//     try {
-//         const bookings = await Booking.find({ name });
-//         res.json(bookings);
-//     } catch (error) {
-//         res.status(500).json({ message: 'Server error', error });
-//     }
-// });
 
 // Feedback
 app.post('/api/feedback', async (req, res) => {
@@ -422,7 +410,8 @@ app.get('/api/user-bookings', async (req, res) => {
 });
 
 // Fetch all bookings by email
-app.get('/api/bookings/:email', async (req, res) => {
+// ✅ Keep this version
+app.get('/api/bookings', async (req, res) => {
   const { email } = req.query;
 
   if (!email) return res.status(400).json({ error: 'Email is required' });
@@ -430,14 +419,15 @@ app.get('/api/bookings/:email', async (req, res) => {
   try {
     const flights = await FlightBooking.find({ email });
     const trains = await TrainBooking.find({ email });
-    const packages = await PackageBooking.find({ email });
+    // const packages = await PackageBooking.find({ email });
 
-    res.json({ flights, trains, packages });
+    res.json({ flights, trains});
   } catch (err) {
     console.error("Fetch bookings error:", err);
     res.status(500).json({ error: 'Failed to fetch bookings' });
   }
 });
+
 
 // Cancel booking by ID and type
 app.delete('/api/bookings/:type/:id', async (req, res) => {

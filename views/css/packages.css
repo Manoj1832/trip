@@ -1,0 +1,172 @@
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background-color: #f4f8fb;
+      color: #2c3e50;
+    }
+    header {
+      background: linear-gradient(135deg, #6b9dfc, #3a70f0);
+      padding: 50px 20px;
+      text-align: center;
+      color: white;
+    }
+    header h1 {
+      margin: 0;
+      font-family: "Playfair Display", serif;
+      font-size: 3rem;
+    }
+    header p {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      color: #dbe5ff;
+    }
+    .container {
+      padding: 60px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 36px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 28px 32px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e0e7ff;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(58, 112, 240, 0.25);
+      border-color: #3a70f0;
+    }
+    .card h3 {
+      margin-top: 0;
+      font-size: 1.6rem;
+      color: #1e40af;
+    }
+    .badge {
+      display: inline-block;
+      margin-top: 8px;
+      background: #dbe5ff;
+      color: #3a70f0;
+      padding: 6px 14px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 50px;
+      width: fit-content;
+    }
+    .price {
+      margin-top: 14px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #059669;
+    }
+    .description {
+      margin-top: 18px;
+      font-size: 1rem;
+      color: #4b5563;
+      flex-grow: 1;
+    }
+    .itinerary {
+      margin-top: 24px;
+    }
+    .itinerary h4 {
+      font-size: 1.1rem;
+      color: #334155;
+    }
+    .itinerary ul {
+      padding-left: 22px;
+      margin: 0;
+      color: #475569;
+      font-size: 0.95rem;
+    }
+    .btn {
+      margin-top: 26px;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #3a70f0, #6b9dfc);
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: white;
+      cursor: pointer;
+      width: 140px;
+      text-align: center;
+      align-self: center;
+    }
+    .btn:hover {
+      background: linear-gradient(135deg, #2c53c6, #3a70f0);
+    }
+    footer {
+      margin-top: 60px;
+      padding: 28px 16px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: #64748b;
+      background-color: #e9effa;
+    }
+    @media (max-width: 400px) {
+      .container {
+        grid-template-columns: 1fr;
+        padding: 40px 20px;
+      }
+      .btn {
+        width: 100%;
+      }
+    }
+
+    /* Modal Styles */
+    #bookingModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+    }
+    #bookingModal .modal-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+    #bookingModal label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+    #bookingModal input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    #bookingModal button {
+      margin-top: 16px;
+      padding: 10px 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #bookingModal .confirm {
+      background-color: #3a70f0;
+      color: white;
+    }
+    #bookingModal .cancel {
+      background-color: #ccc;
+      margin-left: 10px;
+    }

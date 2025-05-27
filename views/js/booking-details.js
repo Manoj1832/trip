@@ -2,22 +2,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   const user = JSON.parse(localStorage.getItem('tripUser'));
   const email = localStorage.getItem('email');
 
-  if (!user || !user.email) {
+  if (!user || !user.email || !email) {
     alert("Please log in to view bookings.");
     window.location.href = "index.html";
     return;
   }
 
- 
-
   try {
-    const res = await fetch(`http://localhost:5000/api/bookings/${email}`);
+    // ✅ Send request with query param (?email=...)
+    const res = await fetch(`http://localhost:5000/api/bookings?email=${encodeURIComponent(email)}`);
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch: ${res.statusText}`);
+    }
 
     const data = await res.json();
 
     renderBookings(data.flights, 'flight-bookings', 'flight');
     renderBookings(data.trains, 'train-bookings', 'train');
-    renderBookings(data.packages, 'package-bookings', 'package');
+    // renderBookings(data.packages, 'package-bookings', 'package');
   } catch (err) {
     console.error("Failed to load bookings:", err);
     alert("Failed to fetch your bookings. Please try again later.");
@@ -38,11 +41,10 @@ function renderBookings(bookings, containerId, type) {
     card.className = "card mb-3";
     card.innerHTML = `
       <div class="card-body">
-        <h5 class="card-title">${booking.name}</h5>
+        <h5 class="card-title">${booking.name || type.toUpperCase()}</h5>
         <p class="card-text"><strong>Email:</strong> ${booking.email}</p>
-        <p class="card-text"><strong>Date:</strong> ${booking.date || 'N/A'}</p>
+        <p class="card-text"><strong>Date:</strong> ${booking.bookingDate || 'N/A'}</p>
         <p class="card-text"><strong>Seats:</strong> ${booking.seats || 1}</p>
-        <p class="card-text"><strong>Price:</strong> ₹${booking.price}</p>
         <button class="btn btn-danger btn-sm" onclick="cancelBooking('${type}', '${booking._id}')">Cancel Booking</button>
       </div>
     `;
@@ -58,6 +60,7 @@ async function cancelBooking(type, id) {
     const res = await fetch(`http://localhost:5000/api/bookings/${type}/${id}`, {
       method: 'DELETE',
     });
+
     const result = await res.json();
 
     if (result.success) {

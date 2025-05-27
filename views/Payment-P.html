@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <link rel="stylesheet" href="./css/Payment-P.css" />
+</head>
+<body>
+ <div class="payment-container" id="payment-form-container">
+ <!-- Logo -->
+ <div class="logo">
+ <img src="assets/paaay.png" alt="Payment Logo" />
+ </div>
+
+ <h2>Payment Details</h2>
+ <div id="booking-summary" style="text-align: left; margin-bottom: 20px; background: #ffffffc2; padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+ <h3 style="margin-top: 0; font-size: 1.4rem;">Booking Summary</h3>
+ <p><strong>Name:</strong> <span id="summary-name"></span></p>
+ <p><strong>Email:</strong> <span id="summary-email"></span></p>
+ <p><strong>Phone:</strong> <span id="summary-phone"></span></p>
+ <p><strong>Package:</strong> <span id="summary-destination"></span></p>
+ <p><strong>Check-in:</strong> <span id="summary-checkin"></span></p>
+ <p><strong>Check-out:</strong> <span id="summary-checkout"></span></p>
+ <p><strong>Persons:</strong> <span id="summary-persons"></span></p>
+ <p><strong>Total Price:</strong> ₹<span id="summary-price"></span></p>
+ </div>
+ <form id="payment-form">
+ <label for="card-name">Cardholder Name</label>
+ <input type="text" id="card-name" placeholder="Enter the Name" required />
+
+ <label for="phone">Phone Number</label>
+ <input type="tel" id="phone"maxlength='10' placeholder="Enter The Phone Number" required pattern="[0-9+ -]{10,15}" />
+
+ <label for="card-number">Card Number</label>
+ <input type="text" id="card-number" maxlength="16" placeholder="1234 5678 9012 3456" required />
+
+ <div class="row">
+ <div class="column">
+ <label for="expiry">Expiry Date</label>
+ <input type="month" id="expiry" placeholder="MM/YY" required />
+ </div>
+ <div class="column">
+ <label for="cvv">CVV</label>
+ <input type="password" id="cvv" maxlength="3" placeholder="123" required />
+ </div>
+ </div>
+
+ <button type="submit">Send OTP</button>
+
+ <!-- OTP container moved inside form and below the Send OTP button -->
+ <div id="otp-container">
+ <label for="otp-input">Enter OTP</label>
+ <input type="text" id="otp-input" placeholder="Enter the OTP" />
+ <button type="button" id="verify-btn">Verify Payment</button>
+ <p id="otp-message"></p>
+ </div>
+ </form>
+ </div>
+ <script src="./js/Payment-P.js"></script>
+</body>
+</html>
